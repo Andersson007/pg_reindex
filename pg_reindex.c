@@ -2,8 +2,8 @@
  * pg_reindex.c - Utility for PostgreSQL index rebuilding
  * and showing related index statistic.
  * Version: see VERSION in the pg_reindex.h
- * Date: 20.03.2018
- * Author: Andrey Klychkov aaklychkov@mail.ru
+ * Date: 18-07-2018
+ * Author: Andrey Klychkov <aaklychkov@mail.ru>
  * See README.md on https://github.com/Andersson007
  */ 
 #include <ctype.h>
@@ -528,7 +528,7 @@ char *get_idx_comment(PGconn *conn, char *iname)
 	param_values[0] = iname;
 
 	res = PQexecParams(conn,
-			   GET_IDXDEF_SQL,
+			   GET_ICOMMENT_SQL,
 			   1,
 			   NULL,
 			   param_values,

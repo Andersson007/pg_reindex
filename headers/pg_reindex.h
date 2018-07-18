@@ -6,7 +6,7 @@
 #define SUCCESS 1
 #define FAIL 0
 
-#define VERSION "1.1.1"
+#define VERSION "1.1.2"
 
 // Default statement timeout:
 #define STATEMENT_TIMEOUT "10"

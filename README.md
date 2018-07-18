@@ -1,14 +1,14 @@
 # pg_reindex
 pg_reindex - Concurrent rebuilding of PostgreSQL indexes and showing related index statistic
 
-v. 1.1.1
+v. 1.1.2
 
-Date: 20.03.2018
+Date: 18-07-2018
 
-Author: Andrey Klychkov
+Author: Andrey Klychkov <aaklychkov@mail.ru>
 
 ### Requirements:
-```libpq```
+```gcc, libpq```
 
 ### Compilation:
 ```
@@ -16,10 +16,10 @@ cd <this_prog_src>
 make
 ```
 Note: don't forget to change the Makefile in the part of the path to libpq files in your system.
-In my case (CentOS 7, the libpq is installed by yum): 
+In my case (CentOS 7, the libpq is installed by yum install postgresql10-devel): 
 ```
-CFLAGS=-I /usr/pgsql-9.4/include/ ...
-LDLIBS=-L /usr/pgsql-9.4/lib -lpq
+CFLAGS=-I /usr/pgsql-10/include/ ...
+LDLIBS=-L /usr/pgsql-10/lib -lpq
 ```
 
 ### Important Information:

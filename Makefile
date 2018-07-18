@@ -4,8 +4,8 @@ OPTIMIZATION=-O0
 DEBUG=
 STANDARD=-std=c11
 WARN_LEVEL=-Wall
-CFLAGS=-I /usr/pgsql-9.6/include/ -c $(WARN_LEVEL) $(DEBUG) $(STANDARD) $(OPTIMIZATION)
-LDLIBS=-L /usr/pgsql-9.6/lib -lpq
+CFLAGS=-I /usr/pgsql-10/include -c $(WARN_LEVEL) $(DEBUG) $(STANDARD) $(OPTIMIZATION)
+LDLIBS=-L /usr/pgsql-10/lib -lpq
 LDFLAGS=
 
 VPATH=
