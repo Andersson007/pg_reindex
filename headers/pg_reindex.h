@@ -6,10 +6,10 @@
 #define SUCCESS 1
 #define FAIL 0
 
-#define VERSION "1.1.2"
+#define VERSION "1.1.3"
 
 // Default statement timeout:
-#define STATEMENT_TIMEOUT "10"
+#define STATEMENT_TIMEOUT "5"
 
 // Default log file:
 #define LOG_FILE "/tmp/pg_reindex.log"

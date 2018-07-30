@@ -2,7 +2,7 @@
  * pg_reindex.c - Utility for PostgreSQL index rebuilding
  * and showing related index statistic.
  * Version: see VERSION in the pg_reindex.h
- * Date: 18-07-2018
+ * Date: 30-07-2018
  * Author: Andrey Klychkov <aaklychkov@mail.ru>
  * See README.md on https://github.com/Andersson007
  */ 
@@ -665,10 +665,10 @@ int drop_idx(PGconn *conn, char *iname)
 	PGresult *res;
 	char *drop_cmd;
 
-	// 11 is a length of "DROP INDEX + 1 '\0'"
-	drop_cmd = (char*)malloc((12 + strlen(iname)) * sizeof(char));
+	// 24 is a length of "DROP INDEX CONCURRENTLY + 1 '\0'"
+	drop_cmd = (char*)malloc((25 + strlen(iname)) * sizeof(char));
 
-	strcpy(drop_cmd, "DROP INDEX ");
+	strcpy(drop_cmd, "DROP INDEX CONCURRENTLY ");
 	strcat(drop_cmd, iname);
 
 	log_write(log_fp, INF, "%s\n", drop_cmd);
@@ -830,9 +830,6 @@ int rebuild_idx(PGconn *conn, char *iname)
 		free(idx_comment);
 	}
 
-	// Set statement_timeout for DROP and RENAME:
-	set_statement_timeout(conn, glob_args.st_timeout);
-
 	// Drop the index:
 	log_write(log_fp, INF, "Try to drop previous index\n");
 
@@ -842,6 +839,10 @@ int rebuild_idx(PGconn *conn, char *iname)
         	// Rename the index:
 		log_write(log_fp, INF,
 			  "Try to rename new index like previous\n");
+
+
+		// Set statement_timeout for RENAME:
+		set_statement_timeout(conn, glob_args.st_timeout);
 
 		if (rename_idx(conn, new_iname, iname)) {
 			log_write(log_fp, INF,

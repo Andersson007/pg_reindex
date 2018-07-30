@@ -1,9 +1,9 @@
 # pg_reindex
 pg_reindex - Concurrent rebuilding of PostgreSQL indexes and showing related index statistic
 
-v. 1.1.2
+v. 1.1.3
 
-Date: 18-07-2018
+Date: 30-07-2018
 
 Author: Andrey Klychkov <aaklychkov@mail.ru>
 
@@ -23,7 +23,7 @@ LDLIBS=-L /usr/pgsql-10/lib -lpq
 ```
 
 ### Important Information:
-During execution DROP/ALTER INDEX commands the table is locked and all queries are not executed until the commands are fulfilled. To avoid the occurrence of queues the statement_timeout set in the const STATEMENT_TIMEOUT into the pg_reindex.c (initially set to 10 seconds). After the specified time the command will be interrupted (that you'll see in the log) and it needs to be done manually into the database, see "Understanding of the concurrent index rebuilding" below. You may change the STATEMENT_TIMEOUT value by using the -t <NUM_SEC> command-line argument. 
+During execution ALTER INDEX commands the table is locked and all queries are not executed until the commands are fulfilled. To avoid the occurrence of queues the statement_timeout set in the const STATEMENT_TIMEOUT into the headers/pg_reindex.h (initially set to 5 seconds). After the specified time the command will be interrupted (that you'll see in the log) and it needs to be done manually into the database, see "Understanding of the concurrent index rebuilding" below. You may change the STATEMENT_TIMEOUT value by using the -t <NUM_SEC> command-line argument. 
 
 ### Descriprion:
 pg_reindex - rebuild postgresql indexes (concurrently) or show:
