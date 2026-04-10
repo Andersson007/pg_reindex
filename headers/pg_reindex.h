@@ -15,16 +15,16 @@
 #define LOG_FILE "/tmp/pg_reindex.log"
 
 // Allowable command-line arguments:
-static const char* opt_string = "d:r:f:u:l:t:nsihv";
+static const char *opt_string = "d:r:f:u:l:t:nsihv";
 
 // Global arguments struct:
 struct glob_args_t {
-	char* db_name;		// -d param
-	char* idx_name;		// -i param
-	char* idx_filename;	// -f param
-	char* size_thresh;	// -u param
-	char* st_timeout;	// -t param
-	char* log_filename;	// -l param
+	char *db_name;		// -d param
+	char *idx_name;		// -r param
+	char *idx_filename;	// -f param
+	char *size_thresh;	// -u param
+	char *st_timeout;	// -t param
+	char *log_filename;	// -l param
 	int new_pref;		// -n
 	int stat;		// -s
 	int inval;		// -i
@@ -54,15 +54,15 @@ int check_idx_validity(PGconn *conn, char *iname);
 
 int rebuild_idx(PGconn *conn, char *iname);
 
-char* get_indexdef(PGconn *conn, char *iname);
+char *get_indexdef(PGconn *conn, char *iname);
 
-char* get_idx_comment(PGconn *conn, char *iname);
+char *get_idx_comment(PGconn *conn, char *iname);
 
-char* make_new_iname(char *iname);
+char *make_new_iname(char *iname);
 
-char* make_creat_cmd(char *new_iname, char *idef);
+char *make_creat_cmd(char *new_iname, char *idef);
 
-int creat_idx(PGconn *conn, char *cmd);
+int create_idx(PGconn *conn, char *cmd);
 
 int add_comment(PGconn *conn, char *iname, char *comment);
 

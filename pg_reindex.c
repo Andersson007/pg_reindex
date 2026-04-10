@@ -21,12 +21,12 @@
 int main(int argc, char **argv)
 {
 	log_fp = NULL;
-        int ret = 0;
-	char* conn_pref = NULL;
+	int ret = 0;
+	char *conn_pref = NULL;
 	char *conninfo = NULL;
 	PGconn *conn = NULL;
 	FILE *file = NULL;
-        char *fname = NULL;
+	char *fname = NULL;
 	char *str = NULL;
 	char *ptr = NULL;
 	char buf[68];
@@ -42,9 +42,8 @@ int main(int argc, char **argv)
 	glob_args.inval = 0;
 	glob_args.new_pref = 0;
 
-	// Get command-lime arguments:
+	// Get command-line arguments:
 	get_opts(argc, argv);
-
 
 	log_fp = fopen(glob_args.log_filename, "a+");
 	if (!log_fp) {
@@ -67,7 +66,7 @@ int main(int argc, char **argv)
 	// Check this connection:
 	if (PQstatus(conn) == CONNECTION_OK)
 		log_write(log_fp, INF, "Connection established\n");
-        else {
+	else {
 		fprintf(stderr, "Connection to database failed: %s\n",
 			PQerrorMessage(conn));
 		log_write(log_fp, ERR, "Connection failed\n");
@@ -79,7 +78,7 @@ int main(int argc, char **argv)
 
 	// Print indexes with the "new_" prefix:
 	if (glob_args.new_pref) {
-		log_write(log_fp, INF, "Show show new_ indexes\n");
+		log_write(log_fp, INF, "Show new_ indexes\n");
 		show_new_pref_idx(conn);
 	}
 
@@ -152,7 +151,7 @@ int main(int argc, char **argv)
 				ptr = strchr(str, '\n');
 				if (ptr != NULL) *ptr = '\0';
 
-				// For the each indexname in the file, do:
+				// For each indexname in the file, do:
 				rebuild_idx(conn, str);
 			}
 		}
@@ -216,7 +215,7 @@ static void get_opts(int argc, char **argv)
 	if (argc < 4)
 		print_help(1);
 
-	// If mutual excluseve args have been passed,
+	// If mutually exclusive args have been passed,
 	// print help and exit with rcode 1:
 	if (!glob_args.db_name)
 		print_help(1);
@@ -261,7 +260,7 @@ static void print_bloat_stat(PGconn *conn)
 		option.align = 1;
 		option.fieldSep = "|";
 
-		PQprint(stdout, res,  &option);
+		PQprint(stdout, res, &option);
 	}
 
 	PQclear(res);
@@ -292,7 +291,7 @@ static void show_new_pref_idx(PGconn *conn)
 		option.align = 1;
 		option.fieldSep = "|";
 
-		PQprint(stdout, res,  &option);
+		PQprint(stdout, res, &option);
 	}
 
 	PQclear(res);
@@ -322,7 +321,7 @@ static void print_invalid_idx(PGconn *conn)
 		option.align = 1;
 		option.fieldSep = "|";
 
-		PQprint(stdout, res,  &option);
+		PQprint(stdout, res, &option);
 	}
 
 	PQclear(res);
@@ -365,7 +364,7 @@ static void print_not_used_idx(PGconn *conn,
 		option.align = 1;
 		option.fieldSep = "|";
 
-		PQprint(stdout, res,  &option);
+		PQprint(stdout, res, &option);
 	}
 
 	PQclear(res);
@@ -417,7 +416,7 @@ int check_idx_name(PGconn *conn, char *iname)
 	PGresult *res;
 	const char *param_values[1];
 
-        // The index name is too long:
+	// The index name is too long:
 	if (strlen(iname) > 63) 
 		return 2;
 
@@ -448,7 +447,7 @@ int check_idx_name(PGconn *conn, char *iname)
 }
 
 
-// chack_idx_validity(): check index validity
+// check_idx_validity(): check index validity
 int check_idx_validity(PGconn *conn, char *iname)
 {
 	PGresult *res;
@@ -512,7 +511,7 @@ char *get_indexdef(PGconn *conn, char *iname)
 		strcpy(idef, PQgetvalue(res, 0, 0));
 		PQclear(res);
 	} else 
-		idef = NULL;  // Not indexdef found
+		idef = NULL;  // No indexdef found
 
 	return idef;
 }
@@ -549,9 +548,9 @@ char *get_idx_comment(PGconn *conn, char *iname)
 			icomm = (char*)malloc(strlen(PQgetvalue(res, 0, 0)) *
 					      sizeof(char) + 1);
 			strcpy(icomm, PQgetvalue(res, 0, 0));
-        	} else {
+		} else {
 			icomm = NULL;
-        	}
+		}
 	} else 
 		icomm = NULL;
 
@@ -577,10 +576,10 @@ char *make_new_iname(char *iname)
 // make_creat_cmd: make a creation command
 char *make_creat_cmd(char *new_iname, char *idef)
 {
-        unsigned i = 0;
-        unsigned space_count = 0;
-        char *cmd = NULL;
-        char *buf = NULL;
+	unsigned i = 0;
+	unsigned space_count = 0;
+	char *cmd = NULL;
+	char *buf = NULL;
 
 	cmd = (char*)malloc(1024 * sizeof(char));
 	buf = (char*)malloc(1024 * sizeof(char));
@@ -593,10 +592,10 @@ char *make_creat_cmd(char *new_iname, char *idef)
 			space_count++;
 
 		if (space_count >= 3) {
-            		strcpy(buf, &idef[i]);
-            		break; 
-        	}
-    	}
+			strcpy(buf, &idef[i]);
+			break;
+		}
+	}
 
 	strcat(cmd, new_iname);
 	strcat(cmd, buf);
@@ -608,54 +607,54 @@ char *make_creat_cmd(char *new_iname, char *idef)
 
 
 // create_idx(): create index
-int creat_idx(PGconn *conn, char *cmd)
+int create_idx(PGconn *conn, char *cmd)
 {
 	PGresult *res;
 
-    	log_write(log_fp, INF, "%s\n", cmd);
+	log_write(log_fp, INF, "%s\n", cmd);
 
-    	res = PQexec(conn, cmd);
-    	if (PQresultStatus(res) == PGRES_COMMAND_OK) {
-        	PQclear(res);
-        	return 1;
-    	} else {
-        	log_write(log_fp, ERR, "QUERY failed: %s\n",
+	res = PQexec(conn, cmd);
+	if (PQresultStatus(res) == PGRES_COMMAND_OK) {
+		PQclear(res);
+		return 1;
+	} else {
+		log_write(log_fp, ERR, "QUERY failed: %s\n",
 			  PQerrorMessage(conn));
-        	PQclear(res);
-        	return 0;
-    	}
+		PQclear(res);
+		return 0;
+	}
 }
 
 
-// add_commeent(): add comment for index
+// add_comment(): add comment for index
 int add_comment(PGconn *conn, char *iname, char *comment)
 {
-    	PGresult *res;
-    	char *str = "COMMENT ON INDEX ";
-    	char *add_comment_sql;
+	PGresult *res;
+	char *str = "COMMENT ON INDEX ";
+	char *add_comment_sql;
 
-    	add_comment_sql = malloc((strlen(str) + 7 +
-                                  strlen(comment) + strlen(iname)) *
+	add_comment_sql = malloc((strlen(str) + 7 +
+				  strlen(comment) + strlen(iname)) *
 				  sizeof(char));
 
-    	strcpy(add_comment_sql, str);
-    	strcat(add_comment_sql, iname);
-    	strcat(add_comment_sql, " IS '");
-    	strcat(add_comment_sql, comment);
-    	strcat(add_comment_sql, "'");
+	strcpy(add_comment_sql, str);
+	strcat(add_comment_sql, iname);
+	strcat(add_comment_sql, " IS '");
+	strcat(add_comment_sql, comment);
+	strcat(add_comment_sql, "'");
 
-    	res = PQexec(conn, add_comment_sql);
-    	free(add_comment_sql);
+	res = PQexec(conn, add_comment_sql);
+	free(add_comment_sql);
 
-    	if (PQresultStatus(res) == PGRES_COMMAND_OK) {
-        	PQclear(res);
-        	return 1;
-    	} else {
-        	log_write(log_fp, ERR, "QUERY failed: %s\n",
+	if (PQresultStatus(res) == PGRES_COMMAND_OK) {
+		PQclear(res);
+		return 1;
+	} else {
+		log_write(log_fp, ERR, "QUERY failed: %s\n",
 			  PQerrorMessage(conn));
-        	PQclear(res);
-        	return 0;
-    	}
+		PQclear(res);
+		return 0;
+	}
 }
 
 
@@ -720,13 +719,13 @@ int rename_idx(PGconn *conn, char *tmp_iname, char *iname)
 }
 
 
-// rebuild index(): the main function for rebuilding
+// rebuild_idx(): the main function for rebuilding
 int rebuild_idx(PGconn *conn, char *iname)
 {
 	unsigned prev_size, 
 		 next_size,
 		 diff;
-        int ret = SUCCESS;
+	int ret = SUCCESS;
 	char *indexdef = NULL;
 	char *idx_comment = NULL;
 	char *new_iname = NULL;
@@ -764,7 +763,7 @@ int rebuild_idx(PGconn *conn, char *iname)
 		return FAIL;
 	}
 
-	// Get the index comment if exist:
+	// Get the index comment if it exists:
 	if ((idx_comment = get_idx_comment(conn, iname)) != NULL)
 		log_write(log_fp, INF,
 			  "Comment of index: '%s'\n", idx_comment);
@@ -799,7 +798,7 @@ int rebuild_idx(PGconn *conn, char *iname)
 	// Create a new index:
 	log_write(log_fp, INF, "Try to create new index\n");
 
-	if (creat_idx(conn, creat_cmd) == 1)
+	if (create_idx(conn, creat_cmd) == 1)
 		log_write(log_fp, INF, "Index has been created\n");
 	else {
 		log_write(log_fp, ERR, "Creation FAILED. Exit\n");
@@ -836,10 +835,9 @@ int rebuild_idx(PGconn *conn, char *iname)
 	if (drop_idx(conn, iname) == 1) {
 		log_write(log_fp, INF, "Index has been dropped\n");
 
-        	// Rename the index:
+		// Rename the index:
 		log_write(log_fp, INF,
 			  "Try to rename new index like previous\n");
-
 
 		// Set statement_timeout for RENAME:
 		set_statement_timeout(conn, glob_args.st_timeout);
@@ -848,7 +846,7 @@ int rebuild_idx(PGconn *conn, char *iname)
 			log_write(log_fp, INF,
 				  "Index has been renamed\n");
 
-			// Get size of the rebuilded index for statistic:
+			// Get size of the rebuilt index for statistic:
 			next_size = get_rel_size(conn, iname);
 			diff = prev_size - next_size;
 			log_write(log_fp, INF,
@@ -864,17 +862,17 @@ int rebuild_idx(PGconn *conn, char *iname)
 		log_write(log_fp, ERR, "Can not drop index\n");
 	}
 
-        set_statement_timeout(conn, "0");
+	set_statement_timeout(conn, "0");
 
 	free(indexdef);
 	free(new_iname);
 
 	if (ret == SUCCESS)
-        	log_write(log_fp, INF, "== Rebuilding is done ==\n");
-        else 
+		log_write(log_fp, INF, "== Rebuilding is done ==\n");
+	else
 		log_write(log_fp, ERR, "== Rebuilding failed ==\n");
 
-        return ret;
+	return ret;
 }
 
 

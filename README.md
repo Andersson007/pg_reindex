@@ -1,11 +1,5 @@
 # pg_reindex
-pg_reindex - Concurrent rebuilding of PostgreSQL indexes and showing related index statistic
-
-v. 1.1.3
-
-Date: 30-07-2018
-
-Author: Andrey Klychkov <aaklychkov@mail.ru>
+pg_reindex - Concurrently rebuilds PostgreSQL indexes and shows size/bloat-related index statistics
 
 ### Requirements:
 ```gcc, libpq```
@@ -23,9 +17,9 @@ LDLIBS=-L /usr/pgsql-10/lib -lpq
 ```
 
 ### Important Information:
-During execution ALTER INDEX commands the table is locked and all queries are not executed until the commands are fulfilled. To avoid the occurrence of queues the statement_timeout set in the const STATEMENT_TIMEOUT into the headers/pg_reindex.h (initially set to 5 seconds). After the specified time the command will be interrupted (that you'll see in the log) and it needs to be done manually into the database, see "Understanding of the concurrent index rebuilding" below. You may change the STATEMENT_TIMEOUT value by using the -t <NUM_SEC> command-line argument. 
+During execution of ALTER INDEX commands the table is locked and all queries are not executed until the commands are fulfilled. To avoid the occurrence of queues the statement_timeout set in the const STATEMENT_TIMEOUT into the headers/pg_reindex.h (initially set to 5 seconds). After the specified time the command will be interrupted (that you'll see in the log) and it needs to be done manually in the database, see "Understanding of the concurrent index rebuilding" below. You may change the STATEMENT_TIMEOUT value by using the -t <NUM_SEC> command-line argument. 
 
-### Descriprion:
+### Description:
 pg_reindex - rebuild postgresql indexes (concurrently) or show:
 ```
 1) top of bloated indexes (maybe you want to know which indexes should be rebuilt first)
@@ -35,17 +29,17 @@ pg_reindex - rebuild postgresql indexes (concurrently) or show:
 4) indexes with the "new_" prefix
 ```
 ### Understanding of the concurrent index rebuilding:
-For concurrent rebuilding of postgresql index
-without a table locking needs to do the steps below:
+For concurrent rebuilding of a PostgreSQL index
+without table locking you need to do the steps below:
 ```
 1) check validity of the current index
 2) get an index definition from pg_indexes;
 3) get an index comment if exists;
-4) realize a temporary name for the new index;
+4) determine a temporary name for the new index;
 5) make a creation command using the index definition
    and the temporary index name and add the expression 'CONCURRENTLY' 
 6) create a new index by the creation command
-7) and add comment if it was on the old index
+7) and add a comment if it was on the old index
 8) check new index validity
 9) if it's valid, drop the old index
 10) rename the new index like the old index
